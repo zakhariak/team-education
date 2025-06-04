@@ -1,0 +1,22 @@
+.overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(black, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.modal {
+  background-color: red;
+  min-width: 50px;
+  min-height: 50px;
+  padding: 15px;
+  border-radius: 5px;
+  position: relative;
+
+  & > button {
+    position: absolute;
+    top: -25px;
+    right: 0px;
+  }
+}
