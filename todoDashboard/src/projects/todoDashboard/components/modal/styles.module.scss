@@ -14,6 +14,12 @@
   border-radius: 5px;
   position: relative;
 
+  form{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
   & > button {
     position: absolute;
     top: -25px;

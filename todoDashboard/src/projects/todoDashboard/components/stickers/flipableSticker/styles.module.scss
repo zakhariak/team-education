@@ -1,0 +1,50 @@
+.front {
+  transform: rotateY(0deg);
+  visibility: visible;
+}
+
+.back {
+  visibility: hidden;
+  transform: rotateY(180deg);
+}
+
+.forwardAnimation {
+  animation-name: flipFront;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+.backwardAnimation {
+  animation-name: flipBack;
+  animation-duration: 1s;
+  animation-fill-mode: both;
+}
+
+@keyframes flipFront {
+  0% {
+    visibility: visible;
+    transform: rotateY(0deg);
+  }
+  50% {
+    visibility: visible;
+    transform: rotateY(90deg);
+  }
+  100% {
+    visibility: hidden;
+    transform: rotateY(180deg);
+  }
+}
+
+@keyframes flipBack {
+  0% {
+    visibility: hidden;
+    transform: rotateY(180deg);
+  }
+  50% {
+    transform: rotateY(90deg);
+    visibility: hidden;
+  }
+  100% {
+    visibility: visible;
+    transform: rotateY(0deg);
+  }
+}

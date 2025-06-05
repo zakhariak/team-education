@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
-import Sticker from "../stickers/sticker";
 import Modal from "../modal";
 import styles from "./styles.module.scss";
+// import flipStyles from "./../stickers/sticker/"
+import FlipableSticker from "../stickers/flipableSticker";
 
 const StickerList = ({ data }) => {
   const [isSelectedAll, setIsSelectedAll] = useState(false);
@@ -82,17 +83,30 @@ const StickerList = ({ data }) => {
         </div>
       )}
 
-      <div className={styles.stikerList}>
+      <div className={styles.stickerList}>
         {list &&
           list.map((item) => (
-            <Sticker
+            <FlipableSticker
               key={item.id}
-              selected={item.selected}
-              onSelectHandler={() => onSelectHandler(item)}
-              removeListElem={() => removeListElem(item)}
-            >
-              {item.content}
-            </Sticker>
+              // classNames={styles.hoverableSticker}
+              frontSide={
+                <div className={styles.stickerFrontSide}>
+                  <div className={styles.stickerHeader}>
+                    <button onClick={() => removeListElem(item)}>X</button>
+                    <button onClick={() => onSelectHandler(item)}>
+                      {item.selected ? "+" : "-"}
+                    </button>
+                  </div>
+                  <div className={styles.stickerBody}>{item.content}</div>
+                </div>
+              }
+              backSide={
+                <div className={styles.stickerBackSide}>
+                  <div>{item.author}</div>
+                  <div>{new Date(item.date).toDateString()}</div>
+                </div>
+              }
+            />
           ))}
       </div>
       <Modal
