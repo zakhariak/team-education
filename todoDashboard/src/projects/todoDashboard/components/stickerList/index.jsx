@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { nanoid } from "nanoid";
 import Modal from "../modal";
 import styles from "./styles.module.scss";
-// import flipStyles from "./../stickers/sticker/"
 import FlipableSticker from "../stickers/flipableSticker";
 
 const StickerList = ({ data }) => {
@@ -19,13 +18,12 @@ const StickerList = ({ data }) => {
   );
 
   useEffect(() => {
-    const newList = list.map((item) => {
-      return {
+    setList((prevList) =>
+      prevList.map((item) => ({
         ...item,
         selected: isSelectedAll,
-      };
-    });
-    setList(newList);
+      }))
+    );
   }, [isSelectedAll]);
 
   useEffect(() => {
@@ -43,7 +41,9 @@ const StickerList = ({ data }) => {
     }
   }, [list]);
 
-  const removeListElem = (el) => {
+  const removeListElem = (event, el) => {
+    event.stopPropagation();
+
     setList(list.filter((item) => item !== el));
   };
 
@@ -51,7 +51,8 @@ const StickerList = ({ data }) => {
     setList([]);
   };
 
-  const onSelectHandler = (item) => {
+  const onSelectHandler = (event, item) => {
+    event.stopPropagation();
     const index = list.indexOf(item);
 
     const changedList = list.toSpliced(index, 1, {
@@ -88,12 +89,13 @@ const StickerList = ({ data }) => {
           list.map((item) => (
             <FlipableSticker
               key={item.id}
-              // classNames={styles.hoverableSticker}
               frontSide={
                 <div className={styles.stickerFrontSide}>
                   <div className={styles.stickerHeader}>
-                    <button onClick={() => removeListElem(item)}>X</button>
-                    <button onClick={() => onSelectHandler(item)}>
+                    <button onClick={(event) => removeListElem(event, item)}>
+                      X
+                    </button>
+                    <button onClick={(event) => onSelectHandler(event, item)}>
                       {item.selected ? "+" : "-"}
                     </button>
                   </div>
