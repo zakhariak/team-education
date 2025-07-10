@@ -4,7 +4,6 @@ export const useDescriptionTooltips = (idList) => {
   const [elements, setElements] = useState([]);
   useEffect(() => {
     setElements(idList.map((id) => document.getElementById(id)));
-  }, []);
+  }, [idList]);
   return elements;
 };
-

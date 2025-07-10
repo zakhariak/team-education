@@ -2,62 +2,45 @@ import { useEffect, useState } from "react";
 import { useDescriptionTooltips } from "./useDescriptionTooltips";
 import { TooltipModal } from "./components/Modal";
 import styles from "./App.module.css";
-import { data } from "./assets/data";
-
-const list = [
-  {
-    id: "nav_with_desc",
-    label: "Navigation",
-    description:
-      "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptas quis sequi sint excepturi hic. Adipisci hic, unde, architecto optio quia quos pariatur maiores quisquam dolores mollitia reiciendis distinctio culpa ea.",
-  },
-  {
-    id: "head_with_desc",
-    label: "Header",
-    description: "Some text",
-  },
-  {
-    id: "button_wddddddasddith_desc",
-    label: "",
-    description: "Some text",
-  },
-  {
-    id: "name_with_desc",
-    label: "Name input",
-    description: "Some text",
-  },
-  {
-    id: "email_with_desc",
-    label: "Email input",
-    description: "Some text",
-  },
-  {
-    id: "button_with_desc",
-    label: "Button",
-    description: "Some text",
-  },
-  {
-    id: "button_wddddddith_desc",
-    label: "",
-    description: "Some text",
-  },
-];
+import { DescriptionDataProvider } from "./dataProviders";
 
 function App() {
+  const [tooltipInitialData, setTooltipInitialData] = useState([]);
+  const [infoData, setInfoData] = useState([]);
+  const [footerData, setFooterData] = useState([]);
+  const [cardData, setCardData] = useState([]);
   const [tooltipData, setTooltipData] = useState([]);
   const [activeElementIndex, setActiveElementIndex] = useState(0);
-  const elements = useDescriptionTooltips(list.map((item) => item.id));
+
+  useEffect(() => {
+    const fetchToolTipData = async () => {
+      const tooltipDataList = await DescriptionDataProvider.getTooltipData();
+      setTooltipInitialData(tooltipDataList);
+      const infoDataResponse = await DescriptionDataProvider.getInfoData();
+      setInfoData(infoDataResponse);
+      const footerDataResponse = await DescriptionDataProvider.getFooterData();
+      setFooterData(footerDataResponse);
+      const cardDataResponse =
+        await DescriptionDataProvider.getDescriptionList();
+      setCardData(cardDataResponse);
+    };
+
+    fetchToolTipData();
+  }, []);
+  const elements = useDescriptionTooltips(
+    tooltipInitialData.map((item) => item.id)
+  );
 
   useEffect(() => {
     setTooltipData(
-      list.flatMap((configItem, index) => {
+      tooltipInitialData.flatMap((configItem, index) => {
         if (elements[index]) {
           return { ...configItem, element: elements[index] };
         }
         return [];
       })
     );
-  }, [elements]);
+  }, [elements, tooltipInitialData]);
 
   const updateActiveElement = (direction) => {
     switch (direction) {
@@ -77,8 +60,6 @@ function App() {
         break;
     }
   };
-
-  console.log(tooltipData);
 
   return (
     <>
@@ -106,8 +87,8 @@ function App() {
         </header>
 
         <section className={styles.info_section}>
-          <h2>{data.infoData.title}</h2>
-          <p>{data.infoData.description}</p>
+          <h2>{infoData?.title}</h2>
+          <p>{infoData?.description}</p>
           <button className={styles.info_button} id="button_with_desc">
             About Us
           </button>
@@ -115,7 +96,7 @@ function App() {
 
         <div className={styles.middle_container}>
           <section className={styles.card_section}>
-            {data.cardData.map((item) => {
+            {cardData?.map((item) => {
               return (
                 <div className={styles.card}>
                   <h2>{item.title}</h2>
@@ -186,8 +167,8 @@ function App() {
         </div>
       </main>
       <footer className={styles.footer}>
-        <h2>{data.footerData.title}</h2>
-        <p>{data.footerData.description}</p>
+        <h2>{footerData?.title}</h2>
+        <p>{footerData?.description}</p>
       </footer>
     </>
   );
