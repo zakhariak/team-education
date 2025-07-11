@@ -1,5 +1,5 @@
-import { useEffect, useState } from "react";
-import { useDescriptionTooltips } from "./useDescriptionTooltips";
+import { useEffect, useMemo, useState } from "react";
+import { useDescriptionTooltips } from "./hooks/useDescriptionTooltips";
 import { TooltipModal } from "./components/Modal";
 import styles from "./App.module.css";
 import { DescriptionDataProvider } from "./dataProviders";
@@ -27,9 +27,12 @@ function App() {
 
     fetchToolTipData();
   }, []);
-  const elements = useDescriptionTooltips(
-    tooltipInitialData.map((item) => item.id)
-  );
+
+  const idList = useMemo(() => {
+    return tooltipInitialData.map((item) => item.id);
+  }, [tooltipInitialData]);
+
+  const elements = useDescriptionTooltips(idList);
 
   useEffect(() => {
     setTooltipData(
@@ -40,7 +43,7 @@ function App() {
         return [];
       })
     );
-  }, [elements, tooltipInitialData]);
+  }, [elements]);
 
   const updateActiveElement = (direction) => {
     switch (direction) {
@@ -60,7 +63,7 @@ function App() {
         break;
     }
   };
-
+  console.log({ tooltipData });
   return (
     <>
       <TooltipModal

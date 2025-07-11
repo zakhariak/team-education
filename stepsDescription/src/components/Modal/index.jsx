@@ -1,5 +1,5 @@
-import React from "react";
 import styles from "./styles.module.css";
+import useElementPosition from "../../hooks/useElementPosition";
 
 export const TooltipModal = ({
   activeElement,
@@ -9,11 +9,21 @@ export const TooltipModal = ({
   elementIndex,
   maxIndex,
 }) => {
-  console.log(activeElement);
-  if (!activeElement) return null;
+  const elementCoords = useElementPosition(activeElement?.element);
+
+  console.log({ elementCoords });
+  if (!activeElement || !elementCoords) return null;
+
+  activeElement.element.style.border = "1px solid red";
 
   return (
-    <div className={styles.container}>
+    <div
+      className={styles.container}
+      style={{
+        top: `${elementCoords.bottom + window.scrollY}px`,
+        left: `${elementCoords.left + window.scrollX}px`,
+      }}
+    >
       <div className={styles.top_container}>
         <div className={styles.counter}>{`${
           elementIndex + 1
