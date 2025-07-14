@@ -12,6 +12,11 @@ export const data = {
       description: "Some text",
     },
     {
+      id: "support_button_with_desc",
+      label: "",
+      description: "Some text",
+    },
+    {
       id: "button_wddddddasddith_desc",
       label: "",
       description: "Some text",

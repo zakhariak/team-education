@@ -4,13 +4,15 @@ import { TooltipModal } from "./components/Modal";
 import styles from "./App.module.css";
 import { DescriptionDataProvider } from "./dataProviders";
 
+const activeElementStyles = "1px solid red";
+
 function App() {
   const [tooltipInitialData, setTooltipInitialData] = useState([]);
   const [infoData, setInfoData] = useState([]);
   const [footerData, setFooterData] = useState([]);
   const [cardData, setCardData] = useState([]);
   const [tooltipData, setTooltipData] = useState([]);
-  const [activeElementIndex, setActiveElementIndex] = useState(0);
+  const [activeElementIndex, setActiveElementIndex] = useState(null);
 
   useEffect(() => {
     const fetchToolTipData = async () => {
@@ -45,25 +47,55 @@ function App() {
     );
   }, [elements]);
 
+  useEffect(() => {
+    if (tooltipData.length) {
+      setActiveElementIndex(0);
+      tooltipData[0].element.style.border = activeElementStyles;
+    }
+  }, [tooltipData]);
+
   const updateActiveElement = (direction) => {
     switch (direction) {
       case "next":
-        setActiveElementIndex((prevState) => prevState + 1);
+        setActiveElementIndex((prevState) => {
+          const newIndex = prevState + 1;
+          tooltipData[prevState].element.style.border = "none";
+          tooltipData[newIndex].element.style.border = activeElementStyles;
+          tooltipData[newIndex].element?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "nearest",
+          });
+          return newIndex;
+        });
         break;
 
       case "prev":
-        setActiveElementIndex((prevState) => prevState - 1);
+        setActiveElementIndex((prevState) => {
+          const newIndex = prevState - 1;
+          tooltipData[prevState].element.style.border = "none";
+          tooltipData[newIndex].element.style.border = activeElementStyles;
+          tooltipData[newIndex].element?.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "nearest",
+          });
+          return newIndex;
+        });
         break;
 
       case "skip":
-        setActiveElementIndex(undefined);
+        setActiveElementIndex((prevState) => {
+          tooltipData[prevState].element.style.border = "none";
+          return undefined;
+        });
         break;
 
       default:
         break;
     }
   };
-  console.log({ tooltipData });
+
   return (
     <>
       <TooltipModal
@@ -82,7 +114,9 @@ function App() {
           <a>Сareer</a>
           <a>Contacts</a>
         </nav>
-        <button className={styles.support_button}>Support</button>
+        <button id="support_button_with_desc" className={styles.support_button}>
+          Support
+        </button>
       </header>
       <main>
         <header className={styles.main_header} id="head_with_desc">

@@ -1,5 +1,6 @@
 import styles from "./styles.module.css";
 import useElementPosition from "../../hooks/useElementPosition";
+import useNearestScreenSide from "../../hooks/useNearestScreenSide";
 
 export const TooltipModal = ({
   activeElement,
@@ -11,19 +12,24 @@ export const TooltipModal = ({
 }) => {
   const elementCoords = useElementPosition(activeElement?.element);
 
-  console.log({ elementCoords });
+  const { horizontalNearestSide, verticalNearestSide } =
+    useNearestScreenSide(elementCoords);
+
   if (!activeElement || !elementCoords) return null;
 
-  activeElement.element.style.border = "1px solid red";
+  console.log({ horizontalNearestSide, verticalNearestSide, elementCoords });
+
+  const tooltipInlineStyle = {
+    inset: "unset",
+    [verticalNearestSide]: `${
+      elementCoords[verticalNearestSide === "top" ? "bottom" : "top"] +
+      window.scrollY
+    }px`,
+    left: `${elementCoords.left + window.scrollX}px`,
+  };
 
   return (
-    <div
-      className={styles.container}
-      style={{
-        top: `${elementCoords.bottom + window.scrollY}px`,
-        left: `${elementCoords.left + window.scrollX}px`,
-      }}
-    >
+    <div className={styles.container} style={tooltipInlineStyle}>
       <div className={styles.top_container}>
         <div className={styles.counter}>{`${
           elementIndex + 1
