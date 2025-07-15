@@ -8,22 +8,28 @@ const activeElementStyles = "1px solid red";
 
 function App() {
   const [tooltipInitialData, setTooltipInitialData] = useState([]);
-  const [infoData, setInfoData] = useState([]);
-  const [footerData, setFooterData] = useState([]);
-  const [cardData, setCardData] = useState([]);
+  const [infoData, setInfoData] = useState(null);
+  const [footerData, setFooterData] = useState(null);
+  const [cardData, setCardData] = useState(null);
   const [tooltipData, setTooltipData] = useState([]);
   const [activeElementIndex, setActiveElementIndex] = useState(null);
 
   useEffect(() => {
     const fetchToolTipData = async () => {
-      const tooltipDataList = await DescriptionDataProvider.getTooltipData();
+      const [
+        tooltipDataList,
+        infoDataResponse,
+        footerDataResponse,
+        cardDataResponse,
+      ] = await Promise.all([
+        DescriptionDataProvider.getTooltipData(),
+        DescriptionDataProvider.getInfoData(),
+        DescriptionDataProvider.getFooterData(),
+        DescriptionDataProvider.getDescriptionList(),
+      ]);
       setTooltipInitialData(tooltipDataList);
-      const infoDataResponse = await DescriptionDataProvider.getInfoData();
       setInfoData(infoDataResponse);
-      const footerDataResponse = await DescriptionDataProvider.getFooterData();
       setFooterData(footerDataResponse);
-      const cardDataResponse =
-        await DescriptionDataProvider.getDescriptionList();
       setCardData(cardDataResponse);
     };
 
@@ -95,7 +101,7 @@ function App() {
         break;
     }
   };
-
+  console.log(infoData);
   return (
     <>
       <TooltipModal
@@ -124,8 +130,15 @@ function App() {
         </header>
 
         <section className={styles.info_section}>
-          <h2>{infoData?.title}</h2>
-          <p>{infoData?.description}</p>
+          {infoData ? (
+            <>
+              <h2>{infoData.title}</h2>
+              <p>{infoData.description}</p>
+            </>
+          ) : (
+            <h1>Loading...</h1>
+          )}
+
           <button className={styles.info_button} id="button_with_desc">
             About Us
           </button>
@@ -133,14 +146,18 @@ function App() {
 
         <div className={styles.middle_container}>
           <section className={styles.card_section}>
-            {cardData?.map((item) => {
-              return (
-                <div className={styles.card}>
-                  <h2>{item.title}</h2>
-                  <p>{item.description}</p>
-                </div>
-              );
-            })}
+            {cardData ? (
+              cardData?.map((item) => {
+                return (
+                  <div className={styles.card}>
+                    <h2>{item.title}</h2>
+                    <p>{item.description}</p>
+                  </div>
+                );
+              })
+            ) : (
+              <h1>Loading...</h1>
+            )}
           </section>
 
           <section className={styles.form_container}>
@@ -204,8 +221,14 @@ function App() {
         </div>
       </main>
       <footer className={styles.footer}>
-        <h2>{footerData?.title}</h2>
-        <p>{footerData?.description}</p>
+        {footerData ? (
+          <>
+            <h2>{footerData?.title}</h2>
+            <p>{footerData?.description}</p>
+          </>
+        ) : (
+          <h1>Loading...</h1>
+        )}
       </footer>
     </>
   );

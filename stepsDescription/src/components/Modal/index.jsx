@@ -17,15 +17,39 @@ export const TooltipModal = ({
 
   if (!activeElement || !elementCoords) return null;
 
-  console.log({ horizontalNearestSide, verticalNearestSide, elementCoords });
+  console.log({
+    allVertical:
+      (verticalNearestSide === "bottom"
+        ? window.innerHeight - elementCoords[verticalNearestSide]
+        : elementCoords[verticalNearestSide]) +
+      window.scrollY +
+      "px",
+    allHorizontal:
+      (horizontalNearestSide === "right"
+        ? window.innerWidth - elementCoords[horizontalNearestSide]
+        : elementCoords[horizontalNearestSide]) +
+      window.scrollX +
+      "px",
+    horizontalNearestSide,
+    verticalNearestSide,
+    elementCoords,
+    scrollX: window.scrollX,
+    scrollY: window.scrollY,
+    innerHeight: window.innerHeight,
+  });
 
   const tooltipInlineStyle = {
     inset: "unset",
-    [verticalNearestSide]: `${
-      elementCoords[verticalNearestSide === "top" ? "bottom" : "top"] +
-      window.scrollY
-    }px`,
-    left: `${elementCoords.left + window.scrollX}px`,
+    [verticalNearestSide]:
+      (verticalNearestSide === "bottom"
+        ? window.innerHeight + window.scrollY - elementCoords["top"]
+        : elementCoords["bottom"] - window.scrollY) + "px",
+    [horizontalNearestSide]:
+      (horizontalNearestSide === "right"
+        ? window.innerWidth - elementCoords[horizontalNearestSide]
+        : elementCoords[horizontalNearestSide]) +
+      window.scrollX +
+      "px",
   };
 
   return (
