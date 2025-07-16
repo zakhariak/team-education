@@ -56,7 +56,7 @@ function App() {
   useEffect(() => {
     if (tooltipData.length) {
       setActiveElementIndex(0);
-      tooltipData[0].element.style.border = activeElementStyles;
+      tooltipData[0].element.style.outline = activeElementStyles;
     }
   }, [tooltipData]);
 
@@ -65,13 +65,16 @@ function App() {
       case "next":
         setActiveElementIndex((prevState) => {
           const newIndex = prevState + 1;
-          tooltipData[prevState].element.style.border = "none";
-          tooltipData[newIndex].element.style.border = activeElementStyles;
-          tooltipData[newIndex].element?.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "nearest",
-          });
+          tooltipData[prevState].element.style.outline = "none";
+          if (tooltipData[newIndex]) {
+            tooltipData[newIndex].element.style.outline = activeElementStyles;
+            tooltipData[newIndex].element.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest",
+              inline: "nearest",
+            });
+          }
+
           return newIndex;
         });
         break;
@@ -79,8 +82,8 @@ function App() {
       case "prev":
         setActiveElementIndex((prevState) => {
           const newIndex = prevState - 1;
-          tooltipData[prevState].element.style.border = "none";
-          tooltipData[newIndex].element.style.border = activeElementStyles;
+          tooltipData[prevState].element.style.outline = "none";
+          tooltipData[newIndex].element.style.outline = activeElementStyles;
           tooltipData[newIndex].element?.scrollIntoView({
             behavior: "smooth",
             block: "nearest",
@@ -101,7 +104,7 @@ function App() {
         break;
     }
   };
-  console.log(infoData);
+
   return (
     <>
       <TooltipModal

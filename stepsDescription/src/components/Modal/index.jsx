@@ -17,39 +17,18 @@ export const TooltipModal = ({
 
   if (!activeElement || !elementCoords) return null;
 
-  console.log({
-    allVertical:
-      (verticalNearestSide === "bottom"
-        ? window.innerHeight - elementCoords[verticalNearestSide]
-        : elementCoords[verticalNearestSide]) +
-      window.scrollY +
-      "px",
-    allHorizontal:
-      (horizontalNearestSide === "right"
-        ? window.innerWidth - elementCoords[horizontalNearestSide]
-        : elementCoords[horizontalNearestSide]) +
-      window.scrollX +
-      "px",
-    horizontalNearestSide,
-    verticalNearestSide,
-    elementCoords,
-    scrollX: window.scrollX,
-    scrollY: window.scrollY,
-    innerHeight: window.innerHeight,
-  });
-
   const tooltipInlineStyle = {
     inset: "unset",
     [verticalNearestSide]:
       (verticalNearestSide === "bottom"
-        ? window.innerHeight + window.scrollY - elementCoords["top"]
-        : elementCoords["bottom"] - window.scrollY) + "px",
+        ? window.innerHeight - window.scrollY - elementCoords["top"]
+        : elementCoords["bottom"] + window.scrollY) + "px",
     [horizontalNearestSide]:
       (horizontalNearestSide === "right"
-        ? window.innerWidth - elementCoords[horizontalNearestSide]
-        : elementCoords[horizontalNearestSide]) +
-      window.scrollX +
-      "px",
+        ? window.innerWidth -
+          window.scrollX -
+          elementCoords[horizontalNearestSide]
+        : elementCoords[horizontalNearestSide] + window.scrollX) + "px",
   };
 
   return (
@@ -59,7 +38,7 @@ export const TooltipModal = ({
           elementIndex + 1
         } / ${maxIndex}`}</div>
         <button className={styles.skip_button} onClick={onSkipStepClick}>
-          Skip
+          {maxIndex === elementIndex + 1 ? "Close" : "Skip"}
         </button>
       </div>
       <h2 className={styles.title}>{activeElement.label}</h2>
@@ -72,8 +51,12 @@ export const TooltipModal = ({
         >
           Prev
         </button>
-        <button className={styles.next_button} onClick={onNextStepClick}>
-          {maxIndex === elementIndex + 1 ? "Close" : "Next"}
+        <button
+          disabled={maxIndex === elementIndex + 1}
+          className={styles.next_button}
+          onClick={onNextStepClick}
+        >
+          Next
         </button>
       </div>
     </div>
