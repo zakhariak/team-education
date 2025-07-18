@@ -122,3 +122,6 @@ main {
   background-color: rgb(151, 172, 194);
   border-top: 2px solid black;
 }
+.next_button {
+  background-color: red;
+}

@@ -13,7 +13,7 @@ export const data = {
     },
     {
       id: "support_button_with_desc",
-      label: "",
+      label: "Support",
       description: "Some text",
     },
     {

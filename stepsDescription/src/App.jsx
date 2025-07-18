@@ -68,11 +68,13 @@ function App() {
           tooltipData[prevState].element.style.outline = "none";
           if (tooltipData[newIndex]) {
             tooltipData[newIndex].element.style.outline = activeElementStyles;
-            tooltipData[newIndex].element.scrollIntoView({
-              behavior: "smooth",
-              block: "nearest",
-              inline: "nearest",
-            });
+            setTimeout(() => {
+              tooltipData[newIndex].element.scrollIntoView({
+                behavior: "smooth",
+                block: "nearest",
+                inline: "nearest",
+              });
+            }, 100);
           }
 
           return newIndex;
@@ -84,18 +86,21 @@ function App() {
           const newIndex = prevState - 1;
           tooltipData[prevState].element.style.outline = "none";
           tooltipData[newIndex].element.style.outline = activeElementStyles;
-          tooltipData[newIndex].element?.scrollIntoView({
-            behavior: "smooth",
-            block: "nearest",
-            inline: "nearest",
-          });
+          setTimeout(() => {
+            tooltipData[newIndex].element.scrollIntoView({
+              behavior: "smooth",
+              block: "nearest",
+              inline: "nearest",
+            });
+          }, 100);
+
           return newIndex;
         });
         break;
 
       case "skip":
         setActiveElementIndex((prevState) => {
-          tooltipData[prevState].element.style.border = "none";
+          tooltipData[prevState].element.style.outline = "none";
           return undefined;
         });
         break;
@@ -105,15 +110,36 @@ function App() {
     }
   };
 
+  const bodyContent = tooltipData[activeElementIndex] ? (
+    <div>
+      <h2>{tooltipData[activeElementIndex].label}</h2>
+      <p>{tooltipData[activeElementIndex].description}</p>
+    </div>
+  ) : null;
+
+  const tooltipModalConfig = {
+    nextButton: {
+      style: { backgroundColor: "red" },
+      onClick: () => updateActiveElement("next"),
+    },
+    prevButton: {
+      onClick: () => updateActiveElement("prev"),
+    },
+    skipButton: {
+      onClick: () => updateActiveElement("skip"),
+      onMouseEnter: () => console.log("work"),
+    },
+    mainContainer: { style: { backgroundColor: "grey" } },
+  };
+
   return (
     <>
       <TooltipModal
         activeElement={tooltipData[activeElementIndex]}
-        onNextStepClick={() => updateActiveElement("next")}
-        onPrevStepClick={() => updateActiveElement("prev")}
-        onSkipStepClick={() => updateActiveElement("skip")}
         elementIndex={activeElementIndex}
         maxIndex={tooltipData.length}
+        bodyContent={bodyContent}
+        config={tooltipModalConfig}
       />
       <header className={styles.header}>
         <h1 className={styles.logo}>Logo</h1>
@@ -152,7 +178,7 @@ function App() {
             {cardData ? (
               cardData?.map((item) => {
                 return (
-                  <div className={styles.card}>
+                  <div key={item.title} className={styles.card}>
                     <h2>{item.title}</h2>
                     <p>{item.description}</p>
                   </div>
